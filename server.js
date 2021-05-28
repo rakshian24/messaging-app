@@ -1,7 +1,8 @@
-const { ApolloServer, gql } = require('apollo-server');
-const path = require('path');
-const glue = require('schemaglue');
-const { sequelize } = require('./models/index');
+import { ApolloServer } from 'apollo-server';
+import path from 'path';
+import glue from 'schemaglue';
+import { sequelize } from './models/index';
+import models from './models';
 
 global.appRoot = path.resolve(__dirname);
 
@@ -12,6 +13,11 @@ const resolvers = resolver;
 const server = new ApolloServer({
   typeDefs,
   resolvers,
+  context: () => {
+    return {
+      models,
+    };
+  },
 });
 
 server.listen().then(({ url }) => {

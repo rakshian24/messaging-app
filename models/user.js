@@ -1,5 +1,6 @@
 'use strict';
 const { Model } = require('sequelize');
+const moment = require('moment');
 module.exports = (sequelize, DataTypes) => {
   class User extends Model {
     /**
@@ -23,12 +24,20 @@ module.exports = (sequelize, DataTypes) => {
         allowNull: false,
         unique: true,
       },
+      createdAt: {
+        defaultValue: moment().format('YYYY-MM-DD HH:mm:ss'),
+        type: DataTypes.DATE,
+      },
+      updatedAt: {
+        defaultValue: moment().format('YYYY-MM-DD HH:mm:ss'),
+        type: DataTypes.DATE,
+      },
     },
     {
       sequelize,
       modelName: 'User',
       tableName: 'users',
-      timestamps: true
+      timestamps: true,
     },
   );
   return User;

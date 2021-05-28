@@ -1,8 +1,14 @@
 type User {
-  userName: String
+  username: String
   email: String
 }
 
+type UserListResponse {
+  has_more: Boolean
+  users_count: Int
+  users: [User]
+}
+
 type Query {
-  getUsers: [User]!
+  getUsers(limit: Int, offset: Int): UserListResponse
 }
