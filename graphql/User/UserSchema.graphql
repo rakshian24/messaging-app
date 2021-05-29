@@ -12,3 +12,12 @@ type UserListResponse {
 type Query {
   getUsers(limit: Int, offset: Int): UserListResponse
 }
+
+type Mutation {
+  registerUser(
+    username: String!
+    email: String!
+    password: String!
+    confirmPassword: String!
+  ): User!
+}

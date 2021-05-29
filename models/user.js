@@ -24,6 +24,14 @@ module.exports = (sequelize, DataTypes) => {
         allowNull: false,
         unique: true,
       },
+      password:{
+        type: DataTypes.STRING,
+        allowNull: false,
+      },
+      userPicUrl:{
+        type: DataTypes.STRING,
+        defaultValue: null,
+      },
       createdAt: {
         defaultValue: moment().format('YYYY-MM-DD HH:mm:ss'),
         type: DataTypes.DATE,

@@ -1,7 +1,7 @@
 import UserRepository from '../repositories/UserRepository';
 import Joi from 'joi';
 import Validator from '../validators/Validator';
-import { UserInputError } from 'apollo-server';
+import { UserInputError, ForbiddenError } from 'apollo-server';
 
 module.exports = class UserService {
   constructor() {
@@ -27,12 +27,41 @@ module.exports = class UserService {
       paginationObj.limit = value.limit ? value.limit : 10;
       paginationObj.offset = value.offset ? value.offset : 0;
 
-      const response = await this.userRepo.findAll(
-        context,
-        paginationObj,
-      );
+      const response = await this.userRepo.findAll(context, paginationObj);
       return response;
     } catch (error) {
+      throw error;
+    }
+  }
+
+  /**
+   * register user
+   * @param {*} args
+   * @param {*} context
+   * @returns user
+   */
+  async registerUser(args, context) {
+    const { error, value } = Joi.validate(args, Validator.registerUser, {
+      abortEarly: false,
+    });
+    if (error) {
+      const errors = error.details;
+      throw new UserInputError('Validation Errors', { errors });
+    }
+    try {
+      const { username, email, password, confirmPassword } = value;
+
+      if (password !== confirmPassword) {
+        throw new ForbiddenError('Passwords does not match!');
+      }
+
+      const registeredUser = await this.userRepo.registerUser(context, value);
+      console.log("Registered User = ", JSON.stringify(registeredUser, undefined, 2))
+
+      return registeredUser;
+
+    } catch (error) {
+      console.log('Etot = ', error);
       throw error;
     }
   }

@@ -8,4 +8,11 @@ exports.resolver = {
       return users;
     },
   },
+  Mutation: {
+    registerUser: async(root, args, context) =>{
+      const userService = new UserService();
+      const user = await userService.registerUser(args, context);
+      return user;
+    }
+  }
 };

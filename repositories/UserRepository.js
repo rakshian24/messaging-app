@@ -25,7 +25,25 @@ module.exports = class UserRepository {
       };
       return response;
     } catch (error) {
-      throw error
+      throw error;
+    }
+  }
+
+  /**
+   * create a user
+   * @param {*} context
+   * @param {*} value
+   */
+  async registerUser(context, value) {
+    try {
+      const { models: { User = {} } = {} } = context;
+
+      const user = await User.create(value);
+      return user;
+    } catch (error) {
+      console.log('Error in Repo = ', error);
+
+      throw error;
     }
   }
 };
