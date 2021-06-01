@@ -41,8 +41,24 @@ module.exports = class UserRepository {
       const user = await User.create(value);
       return user;
     } catch (error) {
-      console.log('Error in Repo = ', error);
+      throw error;
+    }
+  }
 
+  /**
+   * find a user by email
+   * @param {*} context
+   * @param {*} email
+   */
+  async findUserByEmail(context, email) {
+    try {
+      const { models: { User = {} } = {} } = context;
+
+      const user = await User.findOne({
+        where: { email },
+      });
+      return user;
+    } catch (error) {
       throw error;
     }
   }

@@ -20,4 +20,12 @@ export default {
     password: Joi.string().trim().min(6).required(),
     confirmPassword: Joi.string().trim().min(6).required(),
   }),
+
+  /**
+   * Login user validation
+   */
+   loginUser: Joi.object().keys({
+    email: Joi.string().trim().max(100).required(),
+    password: Joi.string().trim().min(6).required(),
+  }),
 };

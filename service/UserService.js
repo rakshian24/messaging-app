@@ -1,8 +1,14 @@
 import UserRepository from '../repositories/UserRepository';
 import Joi from 'joi';
 import Validator from '../validators/Validator';
-import { UserInputError, ForbiddenError } from 'apollo-server';
+import {
+  UserInputError,
+  ForbiddenError,
+  AuthenticationError,
+} from 'apollo-server';
 import bcrypt from 'bcryptjs';
+import jwt from 'jsonwebtoken';
+import { JWT_SECRET_TOKEN } from '../config/env.json';
 
 module.exports = class UserService {
   constructor() {
@@ -62,14 +68,52 @@ module.exports = class UserService {
         ...value,
         password: hashedPwd,
       });
-      console.log(
-        'Registered User = ',
-        JSON.stringify(registeredUser, undefined, 2),
-      );
 
       return registeredUser;
     } catch (error) {
-      console.log('Etot = ', error);
+      throw error;
+    }
+  }
+
+  /**
+   * login user
+   * @param {*} args
+   * @param {*} context
+   * @returns user
+   */
+  async loginUser(args, context) {
+    const { error, value } = Joi.validate(args, Validator.loginUser, {
+      abortEarly: false,
+    });
+    if (error) {
+      const errors = error.details;
+      throw new UserInputError('Validation Errors', { errors });
+    }
+    try {
+      const { email, password } = value;
+
+      const user = await this.userRepo.findUserByEmail(context, email);
+
+      if (!user) {
+        throw new AuthenticationError('Email does not exist!');
+      }
+
+      const doesPasswordMatch = await bcrypt.compare(password, user.password);
+
+      if (!doesPasswordMatch) {
+        throw new AuthenticationError('Invalid Credentials!');
+      }
+
+      const token = jwt.sign({ username: user.username }, JWT_SECRET_TOKEN, {
+        expiresIn: 60 * 60,
+      });
+
+      return {
+        ...user.toJSON(),
+        token,
+        createdAt: user.createdAt.toISOString(),
+      };
+    } catch (error) {
       throw error;
     }
   }
