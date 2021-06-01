@@ -15,9 +15,9 @@ export default {
    * Register user validation
    */
   registerUser: Joi.object().keys({
-    username: Joi.string().max(20).required(),
-    email: Joi.string().max(100).required(),
-    password: Joi.string().min(6).required(),
-    confirmPassword: Joi.string().min(6).required(),
+    username: Joi.string().trim().min(3).max(20).required(),
+    email: Joi.string().trim().max(100).required(),
+    password: Joi.string().trim().min(6).required(),
+    confirmPassword: Joi.string().trim().min(6).required(),
   }),
 };

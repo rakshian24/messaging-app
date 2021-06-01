@@ -2,6 +2,7 @@ import UserRepository from '../repositories/UserRepository';
 import Joi from 'joi';
 import Validator from '../validators/Validator';
 import { UserInputError, ForbiddenError } from 'apollo-server';
+import bcrypt from 'bcryptjs';
 
 module.exports = class UserService {
   constructor() {
@@ -55,11 +56,18 @@ module.exports = class UserService {
         throw new ForbiddenError('Passwords does not match!');
       }
 
-      const registeredUser = await this.userRepo.registerUser(context, value);
-      console.log("Registered User = ", JSON.stringify(registeredUser, undefined, 2))
+      const hashedPwd = await bcrypt.hash(password, 6);
+
+      const registeredUser = await this.userRepo.registerUser(context, {
+        ...value,
+        password: hashedPwd,
+      });
+      console.log(
+        'Registered User = ',
+        JSON.stringify(registeredUser, undefined, 2),
+      );
 
       return registeredUser;
-
     } catch (error) {
       console.log('Etot = ', error);
       throw error;
