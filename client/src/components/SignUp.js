@@ -149,7 +149,16 @@ const SignUp = () => {
             )}
           </Form.Group>
           <div className="text-center">
-            <Button type="submit" className="pg-btn">
+            <Button
+              type="submit"
+              className="pg-btn"
+              disabled={
+                !formData.email ||
+                !formData.username ||
+                !formData.password ||
+                !formData.confirmPassword
+              }
+            >
               Sign Up
             </Button>
           </div>
