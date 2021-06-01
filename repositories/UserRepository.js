@@ -50,12 +50,12 @@ module.exports = class UserRepository {
    * @param {*} context
    * @param {*} email
    */
-  async findUserByEmail(context, email) {
+  async findUserByEmail(context, queryObj) {
     try {
       const { models: { User = {} } = {} } = context;
 
       const user = await User.findOne({
-        where: { email },
+        where: { ...queryObj },
       });
       return user;
     } catch (error) {

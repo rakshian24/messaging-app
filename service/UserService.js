@@ -10,7 +10,7 @@ import bcrypt from 'bcryptjs';
 import jwt from 'jsonwebtoken';
 import { JWT_SECRET_TOKEN } from '../config/env.json';
 
-module.exports = class UserService {
+export default class UserService {
   constructor() {
     this.userRepo = new UserRepository();
   }
@@ -91,8 +91,9 @@ module.exports = class UserService {
     }
     try {
       const { email, password } = value;
-
-      const user = await this.userRepo.findUserByEmail(context, email);
+      let queryObj = {};
+      queryObj.email = email;
+      const user = await this.userRepo.findUserByEmail(context, queryObj);
 
       if (!user) {
         throw new AuthenticationError('Email does not exist!');
