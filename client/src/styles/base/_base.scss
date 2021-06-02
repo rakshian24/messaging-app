@@ -1,0 +1,9 @@
+@import '~bootstrap/scss/bootstrap';
+
+body {
+  min-height: 100vh;
+  background: linear-gradient(203deg, #edeaff 0%, #efecff 50%, #f9f8ff 100%);
+  @media screen and (min-width: 320px) and (max-width: 480px) {
+    background: #ffffff;
+  }
+}

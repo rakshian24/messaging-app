@@ -1,0 +1,15 @@
+$custom-green: #5aac44;
+$box-showdow-offset-x: rgba(41, 38, 38, 0.1);
+
+.signup-card {
+  background-color: #ffffff;
+  border-radius: 3px;
+  padding: 35px 40px;
+  box-shadow: $box-showdow-offset-x 0 0 10px;
+  .pg-btn {
+    background-color: $custom-green;
+    color: #ffffff;
+    width: 100%;
+    margin-top: 0.25rem;
+  }
+}

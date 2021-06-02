@@ -1,5 +1,5 @@
 import { Container } from 'react-bootstrap';
-import './App.scss';
+import './styles/main.scss';
 import { Switch, BrowserRouter } from 'react-router-dom';
 import DynamicRoute from './components/DynamicRoute';
 import Home from './components/Home';
