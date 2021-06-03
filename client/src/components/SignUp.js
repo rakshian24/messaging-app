@@ -1,6 +1,9 @@
+import { useMutation } from '@apollo/client';
 import React, { useState } from 'react';
 import { Row, Col, Form, Button } from 'react-bootstrap';
+import { useHistory } from 'react-router';
 import { strings } from '../helper/strings';
+import {SIGNUP} from "./query";
 
 const SignUp = () => {
   const [errors, setErrors] = useState({});
@@ -10,6 +13,21 @@ const SignUp = () => {
     password: '',
     confirmPassword: '',
   });
+
+  const history = useHistory();
+
+  //Mutation
+  const [signUp, {loading}] = useMutation(SIGNUP, {
+    update(_, res){
+      if(res.data.signUp){
+        setFormData({})
+        history.push("/")
+      }
+    },
+    onError(err){
+      console.log("ERRIR IS  = ", err)
+    }
+  })
 
   const onFormInputChange = async e => {
     const trimmedValue = e.target.value.trim();
@@ -65,7 +83,7 @@ const SignUp = () => {
             const isValidated = await checkFormData();
             if (isValidated) {
               const variables = { ...formData };
-              //   signUp({ variables });
+                signUp({ variables });
             }
             console.log('Form Val = ', formData);
             console.log('isValidated = ', isValidated);

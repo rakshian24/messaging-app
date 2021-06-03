@@ -47,8 +47,8 @@ export default class UserService {
    * @param {*} context
    * @returns user
    */
-  async registerUser(args, context) {
-    const { error, value } = Joi.validate(args, Validator.registerUser, {
+  async signUp(args, context) {
+    const { error, value } = Joi.validate(args, Validator.signUp, {
       abortEarly: false,
     });
     if (error) {
@@ -64,7 +64,7 @@ export default class UserService {
 
       const hashedPwd = await bcrypt.hash(password, 6);
 
-      const registeredUser = await this.userRepo.registerUser(context, {
+      const registeredUser = await this.userRepo.signUp(context, {
         ...value,
         password: hashedPwd,
       });

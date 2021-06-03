@@ -11,9 +11,9 @@ exports.resolver = {
     }),
   },
   Mutation: {
-    registerUser: async (root, args, context) => {
+    signUp: async (root, args, context) => {
       const userService = new UserService();
-      const user = await userService.registerUser(args, context);
+      const user = await userService.signUp(args, context);
       return user;
     },
     loginUser: async (root, args, context) => {

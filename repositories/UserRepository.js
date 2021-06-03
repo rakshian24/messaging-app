@@ -34,7 +34,7 @@ module.exports = class UserRepository {
    * @param {*} context
    * @param {*} value
    */
-  async registerUser(context, value) {
+  async signUp(context, value) {
     try {
       const { models: { User = {} } = {} } = context;
 
