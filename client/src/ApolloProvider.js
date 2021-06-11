@@ -2,7 +2,9 @@ import { ApolloClient, InMemoryCache, ApolloProvider as Provider } from '@apollo
 
 const client = new ApolloClient({
   uri: `http://localhost:4000/`,
-  cache: new InMemoryCache(),
+  cache: new InMemoryCache({
+    addTypename: false,
+  }),
 });
 
 export default function ApolloProvider(props){

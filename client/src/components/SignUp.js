@@ -2,6 +2,7 @@ import { useMutation } from '@apollo/client';
 import React, { useState } from 'react';
 import { Row, Col, Form, Button } from 'react-bootstrap';
 import { useHistory } from 'react-router';
+import { storeUserDataToLocalStorage } from '../helper/functions';
 import { strings } from '../helper/strings';
 import {SIGNUP} from "./query";
 
@@ -26,6 +27,16 @@ const SignUp = () => {
     },
     onError(err){
       console.log("ERRIR IS  = ", err)
+    },
+    onCompleted(data){
+      if(data && data.signUp){
+        storeUserDataToLocalStorage(
+          'user',
+          data.signUp,
+          true,
+        );
+      }
+      console.log("Data = ", data)
     }
   })
 
