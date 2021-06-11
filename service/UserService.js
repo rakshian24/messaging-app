@@ -81,8 +81,8 @@ export default class UserService {
    * @param {*} context
    * @returns user
    */
-  async loginUser(args, context) {
-    const { error, value } = Joi.validate(args, Validator.loginUser, {
+  async login(args, context) {
+    const { error, value } = Joi.validate(args, Validator.login, {
       abortEarly: false,
     });
     if (error) {
@@ -118,4 +118,4 @@ export default class UserService {
       throw error;
     }
   }
-};
+}

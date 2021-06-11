@@ -26,3 +26,18 @@ export const SIGNUP = gql`
   }
   ${USER_DATA}
 `;
+
+export const LOGIN = gql`
+  mutation (
+    $email: String!
+    $password: String!
+  ) {
+    login: login(
+      email: $email     
+      password: $password      
+    ) {
+      ...userData
+    }
+  }
+  ${USER_DATA}
+`;

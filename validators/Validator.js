@@ -14,7 +14,7 @@ export default {
   /**
    * Register user validation
    */
-   signUp: Joi.object().keys({
+  signUp: Joi.object().keys({
     username: Joi.string().trim().min(3).max(20).required(),
     email: Joi.string().trim().max(100).required(),
     password: Joi.string().trim().min(6).required(),
@@ -24,7 +24,7 @@ export default {
   /**
    * Login user validation
    */
-   loginUser: Joi.object().keys({
+  login: Joi.object().keys({
     email: Joi.string().trim().max(100).required(),
     password: Joi.string().trim().min(6).required(),
   }),

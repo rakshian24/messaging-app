@@ -16,9 +16,9 @@ exports.resolver = {
       const user = await userService.signUp(args, context);
       return user;
     },
-    loginUser: async (root, args, context) => {
+    login: async (root, args, context) => {
       const userService = new UserService();
-      const user = await userService.loginUser(args, context);
+      const user = await userService.login(args, context);
       return user;
     },
   },
