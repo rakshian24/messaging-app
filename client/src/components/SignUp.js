@@ -1,4 +1,4 @@
-import { useMutation } from '@apollo/client';
+import { useMutation } from '@apollo/react-hooks';
 import React, { useState } from 'react';
 import { Row, Col, Form, Button } from 'react-bootstrap';
 import { useHistory } from 'react-router';
@@ -6,7 +6,7 @@ import { storeUserDataToLocalStorage } from '../helper/functions';
 import { strings } from '../helper/strings';
 import {SIGNUP} from "./query";
 
-const SignUp = () => {
+export const SignUp = () => {
   const [errors, setErrors] = useState({});
   const [formData, setFormData] = useState({
     email: '',
@@ -196,5 +196,3 @@ const SignUp = () => {
     </Row>
   );
 };
-
-export default SignUp;

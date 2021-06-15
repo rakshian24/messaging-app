@@ -7,8 +7,11 @@ import {
   AuthenticationError,
 } from 'apollo-server';
 import bcrypt from 'bcryptjs';
-import jwt from 'jsonwebtoken';
-import { JWT_SECRET_TOKEN } from '../config/env.json';
+import {
+  createAccessToken,
+  createRefreshToken,
+  sendRefreshToken,
+} from '../helpers/authHelper';
 
 export default class UserService {
   constructor() {
@@ -56,7 +59,7 @@ export default class UserService {
       throw new UserInputError('Validation Errors', { errors });
     }
     try {
-      const { username, email, password, confirmPassword } = value;
+      const { password, confirmPassword } = value;
 
       if (password !== confirmPassword) {
         throw new ForbiddenError('Passwords does not match!');
@@ -69,7 +72,10 @@ export default class UserService {
         password: hashedPwd,
       });
 
-      return registeredUser;
+      return {
+        ...registeredUser.toJSON(),
+        createdAt: registeredUser.createdAt.toISOString(),
+      };
     } catch (error) {
       throw error;
     }
@@ -94,6 +100,10 @@ export default class UserService {
       let queryObj = {};
       queryObj.email = email;
       const user = await this.userRepo.findUserByEmail(context, queryObj);
+      const userResponse = {
+        ...user.toJSON(),
+        createdAt: user.createdAt.toISOString(),
+      };
 
       if (!user) {
         throw new AuthenticationError('Email does not exist!');
@@ -105,16 +115,14 @@ export default class UserService {
         throw new AuthenticationError('Invalid Credentials!');
       }
 
-      const token = jwt.sign({ username: user.username }, JWT_SECRET_TOKEN, {
-        expiresIn: 60 * 60,
-      });
+      sendRefreshToken(context.response, createRefreshToken(user));
 
       return {
-        ...user.toJSON(),
-        token,
-        createdAt: user.createdAt.toISOString(),
+        user: userResponse,
+        accessToken: createAccessToken(user),
       };
     } catch (error) {
+      console.log('ERROR = ', error);
       throw error;
     }
   }

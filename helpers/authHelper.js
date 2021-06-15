@@ -1,7 +1,7 @@
-import jwt from 'jsonwebtoken';
-import { JWT_SECRET_TOKEN } from '../config/env.json';
 import { AuthenticationError } from 'apollo-server-errors';
 import { skip } from 'graphql-resolvers';
+import { sign, verify } from 'jsonwebtoken';
+import { isEmpty } from 'lodash';
 
 export const verifyToken = async (models, header) => {
   let user = {};
@@ -10,12 +10,16 @@ export const verifyToken = async (models, header) => {
     const token = header.authorization
       ? header.authorization.replace('Bearer ', '')
       : '';
+
     if (token) {
-      const decodedTokenObj = jwt.verify(token, JWT_SECRET_TOKEN);
-      const decodedUserName = decodedTokenObj.username;
+      const decodedTokenObj = verify(token, process.env.ACCESS_TOKEN_SECRET);
+
+      const decodedUserId = decodedTokenObj.userId;
+
       user = await User.findOne({
-        where: { username: decodedUserName },
+        where: { id: decodedUserId },
       });
+
       return user;
     } else {
       return user;
@@ -26,5 +30,30 @@ export const verifyToken = async (models, header) => {
 };
 
 export const isAuthenticated = async (parent, args, { user }) => {
-  return user ? skip : new AuthenticationError('Unauthenticated User!');
+  return !isEmpty(user)
+    ? skip
+    : new AuthenticationError('Unauthenticated User!');
+};
+
+export const sendRefreshToken = (res, token) => {
+  res.cookie('refresh_token', token, {
+    httpOnly: true,
+    path: '/refresh_token',
+  });
+};
+
+export const createAccessToken = user => {
+  return sign({ userId: user.id }, process.env.ACCESS_TOKEN_SECRET, {
+    expiresIn: '15m',
+  });
+};
+
+export const createRefreshToken = user => {
+  return sign(
+    { userId: user.id, tokenVersion: user.tokenVersion },
+    process.env.REFRESH_TOKEN_SECRET,
+    {
+      expiresIn: '7d',
+    },
+  );
 };

@@ -1,8 +1,12 @@
 type User {
   username: String!
   email: String!
-  token: String
   createdAt: String
+}
+
+type LoginResponse {
+  user: User
+  accessToken: String
 }
 
 type UserListResponse {
@@ -13,7 +17,10 @@ type UserListResponse {
 
 type Query {
   getUsers(limit: Int, offset: Int): UserListResponse
+  getMe: User
 }
+
+
 
 type Mutation {
   signUp(
@@ -23,5 +30,6 @@ type Mutation {
     confirmPassword: String!
   ): User!
 
-  login(email: String!, password: String!): User!
+  login(email: String!, password: String!): LoginResponse
+  logout: Boolean
 }

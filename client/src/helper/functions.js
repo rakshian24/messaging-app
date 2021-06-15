@@ -19,3 +19,15 @@ export const getUserDataFromLocalStorage = (key, isEcnrypted) => {
   }
   return JSON.parse(localStorage.getItem(key));
 };
+
+let accessToken = "";
+
+export const setAccessToken = (s) => {
+  console.log("S in SETACCES FUNC = ", s)
+  accessToken = s;
+};
+
+export const getAccessToken = () => {
+  console.log("GETTING TOKEN = ", accessToken)
+  return accessToken;
+};

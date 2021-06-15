@@ -1,12 +1,12 @@
-import { useMutation } from '@apollo/client';
+import { useMutation } from '@apollo/react-hooks';
 import React, { useState } from 'react';
 import { Row, Col, Form, Button } from 'react-bootstrap';
 import { useHistory } from 'react-router';
-import { storeUserDataToLocalStorage } from '../helper/functions';
+import { setAccessToken } from '../helper/functions';
 import { strings } from '../helper/strings';
-import { LOGIN } from './query';
+import { LOGIN, GET_ME } from './query';
 
-const Login = () => {
+export const Login = () => {
   const [errors, setErrors] = useState({});
   const [formData, setFormData] = useState({
     email: '',
@@ -18,21 +18,27 @@ const Login = () => {
   const history = useHistory();
 
   //Mutation
-  const [signUp, { loading }] = useMutation(LOGIN, {
-    update(_, res) {
-      if (res.data.login) {
-        setFormData({});
-        history.push('/');
-      }
-    },
+  const [login, { loading }] = useMutation(LOGIN, {
+    // update: (store, { data }) => {
+    //   if (!data) {
+    //     return null;
+    //   }
+
+    //   store.writeQuery({
+    //     query: GET_ME,
+    //     data: {
+    //       me: data.login.user,
+    //     },
+    //   });
+    // },
     onError(err) {
       console.log('ERRIR IS  = ', err);
     },
     onCompleted(data) {
-      if (data && data.login) {
-        storeUserDataToLocalStorage('user', data.login, true);
+      if (data) {
+        setAccessToken(data.login.accessToken);
+        history.push('/');
       }
-      console.log('Data = ', data);
     },
   });
 
@@ -73,7 +79,21 @@ const Login = () => {
             const isValidated = await checkFormData();
             if (isValidated) {
               const variables = { ...formData };
-              signUp({ variables });
+              login({
+                variables,
+                update: (store, { data }) => {
+                  if (!data) {
+                    return null;
+                  }
+                  //To update the cache like this, the getMe response and Login user response should be exactly same
+                  store.writeQuery({
+                    query: GET_ME,
+                    data: {
+                      me: data.login.user,
+                    },
+                  });
+                },
+              });
             }
             console.log('Form Val = ', formData);
             console.log('isValidated = ', isValidated);
@@ -133,5 +153,3 @@ const Login = () => {
     </Row>
   );
 };
-
-export default Login;

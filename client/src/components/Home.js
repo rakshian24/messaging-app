@@ -1,16 +1,5 @@
-import React, { useEffect } from 'react'
-import { getUserDataFromLocalStorage } from '../helper/functions'
+import React, { useEffect } from 'react';
 
-const Home = () => {
-    useEffect(()=>{
-        const user = getUserDataFromLocalStorage('user', true);
-        console.log("User in Homepage= ", user)
-    })
-    return (
-        <div>
-            HomePage
-        </div>
-    )
-}
-
-export default Home
+export const Home = () => {
+  return <div>HomePage</div>;
+};

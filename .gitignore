@@ -1,6 +1,7 @@
 #Sever
 node_modules
 config/*
+.env
 
 #Client 
 client/node_modules

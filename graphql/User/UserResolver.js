@@ -1,6 +1,6 @@
 import UserService from '../../service/UserService';
 import { combineResolvers } from 'graphql-resolvers';
-import { isAuthenticated } from '../../helpers/authHelper';
+import { isAuthenticated, sendRefreshToken } from '../../helpers/authHelper';
 
 exports.resolver = {
   Query: {
@@ -8,6 +8,10 @@ exports.resolver = {
       const userService = new UserService();
       const users = await userService.getUsers(args, context);
       return users;
+    }),
+
+    getMe: combineResolvers(isAuthenticated, async (root, args, context) => {
+      return context.user;
     }),
   },
   Mutation: {
@@ -20,6 +24,10 @@ exports.resolver = {
       const userService = new UserService();
       const user = await userService.login(args, context);
       return user;
+    },
+    logout: async (root, args, context) => {
+      sendRefreshToken(context.response, "");
+      return true;
     },
   },
 };
