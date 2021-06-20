@@ -1,15 +1,17 @@
-import React from "react";
-import ReactDOM from "react-dom";
-import { getAccessToken, setAccessToken } from "./helper/functions";
-import { App } from "./App";
-import { ApolloClient } from "apollo-client";
-import { InMemoryCache } from "apollo-cache-inmemory";
-import { HttpLink } from "apollo-link-http";
-import { onError } from "apollo-link-error";
-import { ApolloLink, Observable } from "apollo-link";
-import { TokenRefreshLink } from "apollo-link-token-refresh";
-import jwtDecode from "jwt-decode";
-import { ApolloProvider } from "@apollo/react-hooks";
+import React from 'react';
+import ReactDOM from 'react-dom';
+import { getAccessToken, setAccessToken } from './helper/functions';
+import { App } from './App';
+import { ApolloClient } from 'apollo-client';
+import { InMemoryCache } from 'apollo-cache-inmemory';
+import { HttpLink } from 'apollo-link-http';
+import { onError } from 'apollo-link-error';
+import { ApolloLink, Observable } from 'apollo-link';
+import { TokenRefreshLink } from 'apollo-link-token-refresh';
+import jwtDecode from 'jwt-decode';
+import { ApolloProvider } from '@apollo/react-hooks';
+import AuthContextProvider from './context/auth';
+// import "./styles/main.scss"
 
 const cache = new InMemoryCache({});
 
@@ -23,8 +25,8 @@ const requestLink = new ApolloLink(
           if (accessToken) {
             operation.setContext({
               headers: {
-                authorization: `Bearer ${accessToken}`
-              }
+                authorization: `Bearer ${accessToken}`,
+              },
             });
           }
         })
@@ -32,7 +34,7 @@ const requestLink = new ApolloLink(
           handle = forward(operation).subscribe({
             next: observer.next.bind(observer),
             error: observer.error.bind(observer),
-            complete: observer.complete.bind(observer)
+            complete: observer.complete.bind(observer),
           });
         })
         .catch(observer.error.bind(observer));
@@ -40,13 +42,13 @@ const requestLink = new ApolloLink(
       return () => {
         if (handle) handle.unsubscribe();
       };
-    })
+    }),
 );
 
 const client = new ApolloClient({
   link: ApolloLink.from([
     new TokenRefreshLink({
-      accessTokenField: "accessToken",
+      accessTokenField: 'accessToken',
       isTokenValidOrUndefined: () => {
         const token = getAccessToken();
 
@@ -66,18 +68,18 @@ const client = new ApolloClient({
         }
       },
       fetchAccessToken: () => {
-        return fetch("http://localhost:4004/refresh_token", {
-          method: "POST",
-          credentials: "include"
+        return fetch('http://localhost:4004/refresh_token', {
+          method: 'POST',
+          credentials: 'include',
         });
       },
       handleFetch: accessToken => {
         setAccessToken(accessToken);
       },
       handleError: err => {
-        console.warn("Your refresh token is invalid. Try to relogin");
+        console.warn('Your refresh token is invalid. Try to relogin');
         console.error(err);
-      }
+      },
     }),
     onError(({ graphQLErrors, networkError }) => {
       console.log(graphQLErrors);
@@ -85,16 +87,18 @@ const client = new ApolloClient({
     }),
     requestLink,
     new HttpLink({
-      uri: "http://localhost:4004/graphql",
-      credentials: "include"
-    })
+      uri: 'http://localhost:4004/graphql',
+      credentials: 'include',
+    }),
   ]),
-  cache
+  cache,
 });
 
 ReactDOM.render(
-  <ApolloProvider client={client}>
-    <App />
-  </ApolloProvider>,
-  document.getElementById("root")
+  <AuthContextProvider>
+    <ApolloProvider client={client}>
+      <App />
+    </ApolloProvider>
+  </AuthContextProvider>,
+  document.getElementById('root'),
 );

@@ -1,7 +1,8 @@
 import { useMutation } from '@apollo/react-hooks';
-import React, { useState } from 'react';
+import React, { useState, useContext } from 'react';
 import { Row, Col, Form, Button } from 'react-bootstrap';
 import { useHistory } from 'react-router';
+import { AuthContext } from '../context/auth';
 import { setAccessToken } from '../helper/functions';
 import { strings } from '../helper/strings';
 import { LOGIN, GET_ME } from './query';
@@ -15,28 +16,19 @@ export const Login = () => {
     confirmPassword: '',
   });
 
+  const {dispatch} = useContext(AuthContext);
+
   const history = useHistory();
 
   //Mutation
-  const [login, { loading }] = useMutation(LOGIN, {
-    // update: (store, { data }) => {
-    //   if (!data) {
-    //     return null;
-    //   }
-
-    //   store.writeQuery({
-    //     query: GET_ME,
-    //     data: {
-    //       me: data.login.user,
-    //     },
-    //   });
-    // },
+  const [login] = useMutation(LOGIN, {
     onError(err) {
       console.log('ERRIR IS  = ', err);
     },
     onCompleted(data) {
       if (data) {
         setAccessToken(data.login.accessToken);
+        dispatch({type: "LOGIN", payload: data.login.user});
         history.push('/');
       }
     },
@@ -95,8 +87,7 @@ export const Login = () => {
                 },
               });
             }
-            console.log('Form Val = ', formData);
-            console.log('isValidated = ', isValidated);
+            
           }}
         >
           <Form.Group

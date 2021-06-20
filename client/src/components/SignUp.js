@@ -36,7 +36,7 @@ export const SignUp = () => {
           true,
         );
       }
-      console.log("Data = ", data)
+      
     }
   })
 
@@ -96,8 +96,7 @@ export const SignUp = () => {
               const variables = { ...formData };
                 signUp({ variables });
             }
-            console.log('Form Val = ', formData);
-            console.log('isValidated = ', isValidated);
+            
           }}
         >
           <Form.Group

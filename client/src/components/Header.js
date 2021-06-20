@@ -1,13 +1,18 @@
-import React, { useState } from 'react';
+import React, { useState, useContext } from 'react';
 import { Link } from 'react-router-dom';
 import { setAccessToken } from '../helper/functions';
 import { useMutation, useQuery } from '@apollo/react-hooks';
 import { LOGOUT, GET_ME } from './query';
 import { useHistory } from 'react-router-dom';
 import { isEmpty } from 'lodash';
+import { AuthContext } from '../context/auth';
+
 
 export const Header = () => {
-  const [isUserLoggedOut, setIsUserLoggedOut] = useState(false)
+  const {auth: {isUserLoggedIn}, dispatch} = useContext(AuthContext);
+  
+  const [isUserLoggedOut, setIsUserLoggedOut] = useState(isUserLoggedIn);
+
   let history = useHistory();
   const {
     data: { me: myProfileData = {} } = {},
@@ -15,7 +20,7 @@ export const Header = () => {
     error,
   } = useQuery(GET_ME, {
     fetchPolicy: 'network-only',
-    skip:isUserLoggedOut
+    skip: !isUserLoggedIn
   });
 
   const [logout, { client }] = useMutation(LOGOUT, {
@@ -24,7 +29,9 @@ export const Header = () => {
     },
     onCompleted(data) {
       if (data) {
-        console.log('Data of Get Me COmpleted = ', data);
+        history.push('/login')
+        
+        dispatch({type: "LOGOUT"})
       }
     },
   });
@@ -33,9 +40,9 @@ export const Header = () => {
     console.log(error);
     return <div>err</div>;
   }
-  console.log('CLIENTNTNT = ', client);
+  
 
-  console.log('data of GetMe = ', myProfileData);
+  
 
   let body = null;
 

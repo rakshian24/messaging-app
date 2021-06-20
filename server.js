@@ -42,6 +42,7 @@ app.post('/refresh_token', async (req, res) => {
   // we can send back an access token
   const { User } = models;
   const user = await User.findOne({ id: payload.userId });
+  const { email, username, createdAt } = user;
 
   if (!user) {
     return res.send({ ok: false, accessToken: '' });
@@ -53,7 +54,15 @@ app.post('/refresh_token', async (req, res) => {
 
   sendRefreshToken(res, createRefreshToken(user));
 
-  return res.send({ ok: true, accessToken: createAccessToken(user) });
+  return res.send({
+    ok: true,
+    accessToken: createAccessToken(user),
+    user: {
+      email,
+      username,
+      createdAt,
+    },
+  });
 });
 
 global.appRoot = path.resolve(__dirname);
