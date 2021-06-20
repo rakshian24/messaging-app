@@ -59,7 +59,7 @@ export const Login = () => {
   };
 
   return (
-    <Row className="py-4 my-5 justify-content-center">
+    <Row className="py-4 my-5 justify-content-center full-width">
       <Col lg={4} md={6} sm={8} className="signup-card">
         <div className="text-center">
           <h5 className="pb-3">Login</h5>

@@ -1,27 +1,22 @@
 import React, { useState, useContext } from 'react';
 import { Link } from 'react-router-dom';
 import { setAccessToken } from '../helper/functions';
-import { useMutation, useQuery } from '@apollo/react-hooks';
-import { LOGOUT, GET_ME } from './query';
+import { useMutation } from '@apollo/react-hooks';
+import { LOGOUT } from './query';
 import { useHistory } from 'react-router-dom';
-import { isEmpty } from 'lodash';
 import { AuthContext } from '../context/auth';
-
+import { Navbar, NavDropdown, ListGroup, Image, Nav } from 'react-bootstrap';
+import logo from '../assets/images/logo.jpg';
 
 export const Header = () => {
-  const {auth: {isUserLoggedIn}, dispatch} = useContext(AuthContext);
-  
-  const [isUserLoggedOut, setIsUserLoggedOut] = useState(isUserLoggedIn);
+  const {
+    auth: { user },
+    dispatch,
+  } = useContext(AuthContext);
+
+  const [isProfileOpen, setIsProfileOpen] = useState(false);
 
   let history = useHistory();
-  const {
-    data: { me: myProfileData = {} } = {},
-    loading,
-    error,
-  } = useQuery(GET_ME, {
-    fetchPolicy: 'network-only',
-    skip: !isUserLoggedIn
-  });
 
   const [logout, { client }] = useMutation(LOGOUT, {
     onError(err) {
@@ -29,65 +24,59 @@ export const Header = () => {
     },
     onCompleted(data) {
       if (data) {
-        history.push('/login')
-        
-        dispatch({type: "LOGOUT"})
+        history.push('/login');
+        dispatch({ type: 'LOGOUT' });
       }
     },
   });
 
-  if (error) {
-    console.log(error);
-    return <div>err</div>;
-  }
-  
+  const openProfileDropdown = () => {
+    setIsProfileOpen(true);
+  };
 
-  
-
-  let body = null;
-
-  if (loading) {
-    body = null;
-  } else if (!isEmpty(myProfileData)) {
-    body = <div>you are logged in as: {myProfileData.email}</div>;
-  } else {
-    body = <div>not logged in</div>;
-  }
+  const closeProfileDropdown = () => {
+    setIsProfileOpen(false);
+  };
 
   return (
-    <header>
-      <div>
-        <Link to="/">home</Link>
-      </div>
-      {isEmpty(myProfileData) ? (
-        <>
+    <Navbar expand="lg" className="header" href="/" to="/" as={Link}>
+      <Navbar.Brand className="title">
+        <img src={logo} alt="logo" className="ml-2 logo" />
+      </Navbar.Brand>
+      <Nav.Item>
+        <NavDropdown
+          className="no-sm-caret profile-nav-dropdown-wrapper"
+          alignRight
+          title={
+            <div className="profile-image">
+              <Image src={logo} />
+            </div>
+          }
+          onClick={e => {
+            e.stopPropagation();
+            isProfileOpen ? closeProfileDropdown() : openProfileDropdown();
+          }}
+          onMouseOver={openProfileDropdown}
+          onMouseOut={closeProfileDropdown}
+          show={isProfileOpen}
+        >
           <div>
-            <Link to="/register">register</Link>
+            <div className="profile-nav-dropdown mb-2 ">
+              <ListGroup className="header-dropdown-list">
+                <ListGroup.Item
+                  onClick={async () => {
+                    await logout();
+                    setAccessToken('');
+                    await client.resetStore();
+                  }}
+                >
+                  Sign Out
+                </ListGroup.Item>
+              </ListGroup>
+            </div>
           </div>
-          <div>
-            <Link to="/login">login</Link>
-          </div>
-        </>
-      ) : null}
-      <div>
-        <Link to="/bye">bye</Link>
-      </div>
-      <div>
-        {!loading && !isEmpty(myProfileData) ? (
-          <button
-            onClick={async () => {
-              await logout();
-              setAccessToken('');
-              await client.resetStore();
-              setIsUserLoggedOut(!isUserLoggedOut)
-              history.push('/login');
-            }}
-          >
-            logout
-          </button>
-        ) : null}
-      </div>
-      {body}
-    </header>
+        </NavDropdown>
+      </Nav.Item>
+    </Navbar>
   );
 };

@@ -11,7 +11,7 @@ import { TokenRefreshLink } from 'apollo-link-token-refresh';
 import jwtDecode from 'jwt-decode';
 import { ApolloProvider } from '@apollo/react-hooks';
 import AuthContextProvider from './context/auth';
-// import "./styles/main.scss"
+import "./styles/main.scss"
 
 const cache = new InMemoryCache({});
 
