@@ -2,9 +2,10 @@ import { useMutation } from '@apollo/react-hooks';
 import React, { useState } from 'react';
 import { Row, Col, Form, Button } from 'react-bootstrap';
 import { useHistory } from 'react-router';
+import { Link } from 'react-router-dom';
 import { storeUserDataToLocalStorage } from '../helper/functions';
 import { strings } from '../helper/strings';
-import {SIGNUP} from "./query";
+import { SIGNUP } from './query';
 
 export const SignUp = () => {
   const [errors, setErrors] = useState({});
@@ -18,27 +19,22 @@ export const SignUp = () => {
   const history = useHistory();
 
   //Mutation
-  const [signUp, {loading}] = useMutation(SIGNUP, {
-    update(_, res){
-      if(res.data.signUp){
-        setFormData({})
-        history.push("/")
+  const [signUp] = useMutation(SIGNUP, {
+    update(_, res) {
+      if (res.data.signUp) {
+        setFormData({});
+        history.push('/');
       }
     },
-    onError(err){
-      console.log("ERRIR IS  = ", err)
+    onError(err) {
+      console.log('ERRIR IS  = ', err);
     },
-    onCompleted(data){
-      if(data && data.signUp){
-        storeUserDataToLocalStorage(
-          'user',
-          data.signUp,
-          true,
-        );
+    onCompleted(data) {
+      if (data && data.signUp) {
+        storeUserDataToLocalStorage('user', data.signUp, true);
       }
-      
-    }
-  })
+    },
+  });
 
   const onFormInputChange = async e => {
     const trimmedValue = e.target.value.trim();
@@ -94,9 +90,8 @@ export const SignUp = () => {
             const isValidated = await checkFormData();
             if (isValidated) {
               const variables = { ...formData };
-                signUp({ variables });
+              signUp({ variables });
             }
-            
           }}
         >
           <Form.Group
@@ -191,6 +186,12 @@ export const SignUp = () => {
             </Button>
           </div>
         </Form>
+        <div className="mt-2">
+          Already have an account?
+          <Link to="/login">
+            <span className="ml-1">Login here</span>
+          </Link>
+        </div>
       </Col>
     </Row>
   );

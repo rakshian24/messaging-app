@@ -2,6 +2,7 @@ import { useMutation } from '@apollo/react-hooks';
 import React, { useState, useContext } from 'react';
 import { Row, Col, Form, Button } from 'react-bootstrap';
 import { useHistory } from 'react-router';
+import { Link } from 'react-router-dom';
 import { AuthContext } from '../context/auth';
 import { setAccessToken } from '../helper/functions';
 import { strings } from '../helper/strings';
@@ -16,7 +17,7 @@ export const Login = () => {
     confirmPassword: '',
   });
 
-  const {dispatch} = useContext(AuthContext);
+  const { dispatch } = useContext(AuthContext);
 
   const history = useHistory();
 
@@ -28,7 +29,7 @@ export const Login = () => {
     onCompleted(data) {
       if (data) {
         setAccessToken(data.login.accessToken);
-        dispatch({type: "LOGIN", payload: data.login.user});
+        dispatch({ type: 'LOGIN', payload: data.login.user });
         history.push('/');
       }
     },
@@ -87,7 +88,6 @@ export const Login = () => {
                 },
               });
             }
-            
           }}
         >
           <Form.Group
@@ -140,6 +140,12 @@ export const Login = () => {
             </Button>
           </div>
         </Form>
+        <div className="mt-2">
+          New to Ping Me?
+          <Link to="/signup">
+            <span className="ml-1">Sign Up here</span>
+          </Link>
+        </div>
       </Col>
     </Row>
   );

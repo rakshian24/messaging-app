@@ -1,5 +1,10 @@
 @import '~bootstrap/scss/bootstrap';
 
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
 body {
   min-height: 100vh;
   width: 100%;
@@ -7,6 +12,7 @@ body {
   @media screen and (min-width: 320px) and (max-width: 480px) {
     background: #ffffff;
   }
+  overflow: hidden;
 
   .full-width {
     width: 100%;
