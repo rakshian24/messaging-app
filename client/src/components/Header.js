@@ -7,6 +7,7 @@ import { useHistory } from 'react-router-dom';
 import { AuthContext } from '../context/auth';
 import { Navbar, NavDropdown, ListGroup, Image, Nav } from 'react-bootstrap';
 import logo from '../assets/images/logo.jpg';
+import { isEmpty } from 'lodash';
 
 export const Header = () => {
   const {
@@ -39,7 +40,7 @@ export const Header = () => {
   };
 
   return (
-    <Navbar expand="lg" className="header" href="/" to="/" as={Link}>
+    <Navbar expand="lg" className="header">
       <div>
         <Navbar.Brand className="title">
           <img src={logo} alt="logo" className="ml-3 logo" />
@@ -47,47 +48,63 @@ export const Header = () => {
       </div>
       <div>
         <Nav className="header-nav ml-auto">
-          <NavDropdown
-            id="basic-nav-dropdown"
-            className="nav-dropdown"
-            alignRight
-            title={
-              <div className="profile-image">
-                <Image src={'https://place-hold.it/300'} />
-              </div>
-            }
-            onClick={e => {
-              e.stopPropagation();
-              isProfileOpen ? closeProfileDropdown() : openProfileDropdown();
-            }}
-            onMouseOver={openProfileDropdown}
-            onMouseOut={closeProfileDropdown}
-            show={isProfileOpen}
-          >
-            <div className="profile-nav-dropdown">
-              <div className="dropdown-user-profile">
-                <div className="user-profile-image mx-3">
-                  <Image src={'https://place-hold.it/300'} />
+          {isEmpty(user) ? (
+            <>
+              <Nav.Item href="/login">
+                <Nav.Link as={Link} to="/login">Login</Nav.Link>
+              </Nav.Item>
+              <Nav.Item href="/signup">
+                <Nav.Link as={Link} to="/signup">Sign Up</Nav.Link>
+              </Nav.Item>
+            </>
+          ) : null}
+          {!isEmpty(user) ? (
+            <Nav.Item>
+              <NavDropdown
+                id="basic-nav-dropdown"
+                className="nav-dropdown"
+                alignRight
+                title={
+                  <div className="profile-image">
+                    <Image src={'https://place-hold.it/300'} />
+                  </div>
+                }
+                onClick={e => {
+                  e.stopPropagation();
+                  isProfileOpen
+                    ? closeProfileDropdown()
+                    : openProfileDropdown();
+                }}
+                onMouseOver={openProfileDropdown}
+                onMouseOut={closeProfileDropdown}
+                show={isProfileOpen}
+              >
+                <div className="profile-nav-dropdown">
+                  <div className="dropdown-user-profile">
+                    <div className="user-profile-image mx-3">
+                      <Image src={'https://place-hold.it/300'} />
+                    </div>
+                    <div className="user-profile-name">
+                      <div>{user.username}</div>
+                      <div>{user.email}</div>
+                    </div>
+                  </div>
+                  <hr />
+                  <ListGroup className="header-dropdown-list">
+                    <ListGroup.Item
+                      onClick={async () => {
+                        await logout();
+                        setAccessToken('');
+                        await client.resetStore();
+                      }}
+                    >
+                      Sign Out
+                    </ListGroup.Item>
+                  </ListGroup>
                 </div>
-                <div className="user-profile-name">
-                  <div>{user.username}</div>
-                  <div>{user.email}</div>
-                </div>
-              </div>
-              <hr />
-              <ListGroup className="header-dropdown-list">
-                <ListGroup.Item
-                  onClick={async () => {
-                    await logout();
-                    setAccessToken('');
-                    await client.resetStore();
-                  }}
-                >
-                  Sign Out
-                </ListGroup.Item>
-              </ListGroup>
-            </div>
-          </NavDropdown>
+              </NavDropdown>
+            </Nav.Item>
+          ) : null}
         </Nav>
       </div>
     </Navbar>

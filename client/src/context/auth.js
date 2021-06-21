@@ -6,7 +6,7 @@ export const AuthContext = createContext();
 const AuthContextProvider = props => {
   const [auth, dispatch] = useReducer(authReducer, {
     isUserLoggedIn: false,
-    user: null,
+    user: {},
   });
 
   return (

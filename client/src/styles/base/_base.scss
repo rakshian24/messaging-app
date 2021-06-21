@@ -12,10 +12,13 @@ body {
   @media screen and (min-width: 320px) and (max-width: 480px) {
     background: #ffffff;
   }
-  overflow: hidden;
 
   .full-width {
     width: 100%;
+  }
+
+  .app-body {
+    margin-top: 70px;
   }
 }
 

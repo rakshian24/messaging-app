@@ -78,7 +78,7 @@ export const SignUp = () => {
   };
 
   return (
-    <Row className="py-4 my-5 justify-content-center">
+    <Row className="py-5 my-5 justify-content-center">
       <Col lg={4} md={6} sm={8} className="signup-card">
         <div className="text-center">
           <h5 className="pb-3">Sign up for your account</h5>
