@@ -40,28 +40,41 @@ export const Header = () => {
 
   return (
     <Navbar expand="lg" className="header" href="/" to="/" as={Link}>
-      <Navbar.Brand className="title">
-        <img src={logo} alt="logo" className="ml-2 logo" />
-      </Navbar.Brand>
-      <Nav.Item>
-        <NavDropdown
-          className="no-sm-caret profile-nav-dropdown-wrapper"
-          alignRight
-          title={
-            <div className="profile-image">
-              <Image src={logo} />
-            </div>
-          }
-          onClick={e => {
-            e.stopPropagation();
-            isProfileOpen ? closeProfileDropdown() : openProfileDropdown();
-          }}
-          onMouseOver={openProfileDropdown}
-          onMouseOut={closeProfileDropdown}
-          show={isProfileOpen}
-        >
-          <div>
-            <div className="profile-nav-dropdown mb-2 ">
+      <div>
+        <Navbar.Brand className="title">
+          <img src={logo} alt="logo" className="ml-3 logo" />
+        </Navbar.Brand>
+      </div>
+      <div>
+        <Nav className="header-nav ml-auto">
+          <NavDropdown
+            id="basic-nav-dropdown"
+            className="nav-dropdown"
+            alignRight
+            title={
+              <div className="profile-image">
+                <Image src={'https://place-hold.it/300'} />
+              </div>
+            }
+            onClick={e => {
+              e.stopPropagation();
+              isProfileOpen ? closeProfileDropdown() : openProfileDropdown();
+            }}
+            onMouseOver={openProfileDropdown}
+            onMouseOut={closeProfileDropdown}
+            show={isProfileOpen}
+          >
+            <div className="profile-nav-dropdown">
+              <div className="dropdown-user-profile">
+                <div className="user-profile-image mx-3">
+                  <Image src={'https://place-hold.it/300'} />
+                </div>
+                <div className="user-profile-name">
+                  <div>{user.username}</div>
+                  <div>{user.email}</div>
+                </div>
+              </div>
+              <hr />
               <ListGroup className="header-dropdown-list">
                 <ListGroup.Item
                   onClick={async () => {
@@ -74,9 +87,9 @@ export const Header = () => {
                 </ListGroup.Item>
               </ListGroup>
             </div>
-          </div>
-        </NavDropdown>
-      </Nav.Item>
+          </NavDropdown>
+        </Nav>
+      </div>
     </Navbar>
   );
 };
