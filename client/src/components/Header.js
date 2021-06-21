@@ -3,7 +3,6 @@ import { Link } from 'react-router-dom';
 import { setAccessToken } from '../helper/functions';
 import { useMutation } from '@apollo/react-hooks';
 import { LOGOUT } from './query';
-import { useHistory } from 'react-router-dom';
 import { AuthContext } from '../context/auth';
 import { Navbar, NavDropdown, ListGroup, Image, Nav } from 'react-bootstrap';
 import logo from '../assets/images/logo.jpg';
@@ -17,15 +16,12 @@ export const Header = () => {
 
   const [isProfileOpen, setIsProfileOpen] = useState(false);
 
-  let history = useHistory();
-
   const [logout, { client }] = useMutation(LOGOUT, {
     onError(err) {
       console.log('ERRIR IS  = ', err);
     },
     onCompleted(data) {
       if (data) {
-        history.push('/login');
         dispatch({ type: 'LOGOUT' });
       }
     },
@@ -42,7 +38,7 @@ export const Header = () => {
   return (
     <Navbar expand="lg" className="header">
       <div>
-        <Navbar.Brand className="title">
+        <Navbar.Brand className="title" href="/" to="/" as={Link}>
           <img src={logo} alt="logo" className="ml-3 logo" />
         </Navbar.Brand>
       </div>
@@ -51,10 +47,14 @@ export const Header = () => {
           {isEmpty(user) ? (
             <>
               <Nav.Item href="/login">
-                <Nav.Link as={Link} to="/login">Login</Nav.Link>
+                <Nav.Link as={Link} to="/login">
+                  Login
+                </Nav.Link>
               </Nav.Item>
               <Nav.Item href="/signup">
-                <Nav.Link as={Link} to="/signup">Sign Up</Nav.Link>
+                <Nav.Link as={Link} to="/signup">
+                  Sign Up
+                </Nav.Link>
               </Nav.Item>
             </>
           ) : null}
@@ -66,7 +66,10 @@ export const Header = () => {
                 alignRight
                 title={
                   <div className="profile-image">
-                    <Image src={'https://place-hold.it/300'} />
+                    <Image
+                      src={'https://place-hold.it/300'}
+                      alt="user-profile-pic"
+                    />
                   </div>
                 }
                 onClick={e => {
@@ -82,7 +85,10 @@ export const Header = () => {
                 <div className="profile-nav-dropdown">
                   <div className="dropdown-user-profile">
                     <div className="user-profile-image mx-3">
-                      <Image src={'https://place-hold.it/300'} />
+                      <Image
+                        src={'https://place-hold.it/300'}
+                        alt="user-profile-pic"
+                      />
                     </div>
                     <div className="user-profile-name">
                       <div>{user.username}</div>
@@ -92,6 +98,8 @@ export const Header = () => {
                   <hr />
                   <ListGroup className="header-dropdown-list">
                     <ListGroup.Item
+                      as={'a'}
+                      href="/login"
                       onClick={async () => {
                         await logout();
                         setAccessToken('');
