@@ -38,6 +38,7 @@ export default class UserService {
       paginationObj.offset = value.offset ? value.offset : 0;
 
       const response = await this.userRepo.findAll(context, paginationObj);
+      throw new Error("Deliberate Error!")
       return response;
     } catch (error) {
       throw error;

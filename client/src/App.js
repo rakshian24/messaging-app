@@ -3,6 +3,7 @@ import { Routes } from './components/Routes';
 import { AuthContext } from './context/auth';
 import { setAccessToken } from './helper/functions';
 import Loader from './components/Custom/Loader';
+import { LOGIN } from './reducer/actionTypes';
 
 export const App = () => {
   const [loading, setLoading] = useState(true);
@@ -16,7 +17,7 @@ export const App = () => {
       const { accessToken, user } = await x.json();
       setAccessToken(accessToken);
       setLoading(false);
-      dispatch({ type: 'LOGIN', payload: user });
+      dispatch({ type: LOGIN, payload: user });
     });
   }, []);
 

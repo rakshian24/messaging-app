@@ -11,16 +11,16 @@ import { TokenRefreshLink } from 'apollo-link-token-refresh';
 import jwtDecode from 'jwt-decode';
 import { ApolloProvider } from '@apollo/react-hooks';
 import AuthContextProvider from './context/auth';
-import "./styles/main.scss"
+import './styles/main.scss';
 
 const cache = new InMemoryCache({});
 
 const requestLink = new ApolloLink(
   (operation, forward) =>
-    new Observable(observer => {
+    new Observable((observer) => {
       let handle;
       Promise.resolve(operation)
-        .then(operation => {
+        .then((operation) => {
           const accessToken = getAccessToken();
           if (accessToken) {
             operation.setContext({
@@ -73,10 +73,10 @@ const client = new ApolloClient({
           credentials: 'include',
         });
       },
-      handleFetch: accessToken => {
+      handleFetch: (accessToken) => {
         setAccessToken(accessToken);
       },
-      handleError: err => {
+      handleError: (err) => {
         console.warn('Your refresh token is invalid. Try to relogin');
         console.error(err);
       },

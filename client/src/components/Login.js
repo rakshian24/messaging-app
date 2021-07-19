@@ -7,6 +7,7 @@ import { AuthContext } from '../context/auth';
 import { setAccessToken } from '../helper/functions';
 import { strings } from '../helper/strings';
 import { LOGIN, GET_ME } from './query';
+import { LOGIN as LOGIN_TYPE } from '../reducer/actionTypes';
 
 export const Login = () => {
   const [errors, setErrors] = useState({});
@@ -29,13 +30,13 @@ export const Login = () => {
     onCompleted(data) {
       if (data) {
         setAccessToken(data.login.accessToken);
-        dispatch({ type: 'LOGIN', payload: data.login.user });
+        dispatch({ type: LOGIN_TYPE, payload: data.login.user });
         history.push('/');
       }
     },
   });
 
-  const onFormInputChange = async e => {
+  const onFormInputChange = async (e) => {
     const trimmedValue = e.target.value.trim();
     setFormData({ ...formData, [e.target.name]: trimmedValue });
   };
@@ -60,93 +61,95 @@ export const Login = () => {
   };
 
   return (
-    <Row className="py-5 my-5 justify-content-center full-width">
-      <Col lg={4} md={6} sm={8} className="signup-card">
-        <div className="text-center">
-          <h5 className="pb-3">Login</h5>
-        </div>
-        <Form
-          onSubmit={async e => {
-            e.preventDefault();
-
-            const isValidated = await checkFormData();
-            if (isValidated) {
-              const variables = { ...formData };
-              login({
-                variables,
-                update: (store, { data }) => {
-                  if (!data) {
-                    return null;
-                  }
-                  //To update the cache like this, the getMe response and Login user response should be exactly same
-                  store.writeQuery({
-                    query: GET_ME,
-                    data: {
-                      me: data.login.user,
-                    },
-                  });
-                },
-              });
-            }
-          }}
-        >
-          <Form.Group
-            className={errors.email && 'has-error'}
-            controlId="formBasicEmail"
-          >
-            <Form.Label className="formLabel">Email</Form.Label>
-            <Form.Control
-              type="email"
-              placeholder="Enter Email"
-              name="email"
-              value={formData.email}
-              isInvalid={errors.email}
-              onChange={e => onFormInputChange(e)}
-            />
-            {errors.email && (
-              <Form.Control.Feedback type="invalid">
-                {errors.email}
-              </Form.Control.Feedback>
-            )}
-          </Form.Group>
-
-          <Form.Group
-            className={errors.password && 'has-error'}
-            controlId="formBasicPwd"
-          >
-            <Form.Label className="formLabel">Password</Form.Label>
-            <Form.Control
-              type="password"
-              placeholder="Enter Password"
-              name="password"
-              value={formData.password}
-              isInvalid={errors.password}
-              onChange={e => onFormInputChange(e)}
-            />
-            {errors.password && (
-              <Form.Control.Feedback type="invalid">
-                {errors.password}
-              </Form.Control.Feedback>
-            )}
-          </Form.Group>
-
+    <>
+      <Row className="py-5 my-5 justify-content-center full-width">
+        <Col lg={4} md={6} sm={8} className="signup-card">
           <div className="text-center">
-            <Button
-              type="submit"
-              className="pg-btn"
-              disabled={!formData.email || !formData.password}
-            >
-              Login
-            </Button>
+            <h5 className="pb-3">Login</h5>
           </div>
-        </Form>
-        <div className="mt-2">
-          New to Ping Me?
-          <Link to="/signup">
-            <span className="ml-1">Sign Up here</span>
-          </Link>
-        </div>
-      </Col>
-    </Row>
+          <Form
+            onSubmit={async (e) => {
+              e.preventDefault();
+
+              const isValidated = await checkFormData();
+              if (isValidated) {
+                const variables = { ...formData };
+                login({
+                  variables,
+                  update: (store, { data }) => {
+                    if (!data) {
+                      return null;
+                    }
+                    //To update the cache like this, the getMe response and Login user response should be exactly same
+                    store.writeQuery({
+                      query: GET_ME,
+                      data: {
+                        me: data.login.user,
+                      },
+                    });
+                  },
+                });
+              }
+            }}
+          >
+            <Form.Group
+              className={errors.email && 'has-error'}
+              controlId="formBasicEmail"
+            >
+              <Form.Label className="formLabel">Email</Form.Label>
+              <Form.Control
+                type="email"
+                placeholder="Enter Email"
+                name="email"
+                value={formData.email}
+                isInvalid={errors.email}
+                onChange={(e) => onFormInputChange(e)}
+              />
+              {errors.email && (
+                <Form.Control.Feedback type="invalid">
+                  {errors.email}
+                </Form.Control.Feedback>
+              )}
+            </Form.Group>
+
+            <Form.Group
+              className={errors.password && 'has-error'}
+              controlId="formBasicPwd"
+            >
+              <Form.Label className="formLabel">Password</Form.Label>
+              <Form.Control
+                type="password"
+                placeholder="Enter Password"
+                name="password"
+                value={formData.password}
+                isInvalid={errors.password}
+                onChange={(e) => onFormInputChange(e)}
+              />
+              {errors.password && (
+                <Form.Control.Feedback type="invalid">
+                  {errors.password}
+                </Form.Control.Feedback>
+              )}
+            </Form.Group>
+
+            <div className="text-center">
+              <Button
+                type="submit"
+                className="pg-btn"
+                disabled={!formData.email || !formData.password}
+              >
+                Login
+              </Button>
+            </div>
+          </Form>
+          <div className="mt-2">
+            New to Ping Me?
+            <Link to="/signup">
+              <span className="ml-1">Sign Up here</span>
+            </Link>
+          </div>
+        </Col>
+      </Row>
+    </>
   );
 };

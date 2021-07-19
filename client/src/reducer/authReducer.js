@@ -1,19 +1,21 @@
+import { LOGIN, LOGOUT } from './actionTypes';
+
 export const authReducer = (state, action) => {
   const { payload } = action;
-  
+
   switch (action.type) {
-    case 'LOGIN': {
+    case LOGIN: {
       return {
         ...state,
         isUserLoggedIn: payload ? true : false,
-        user: payload
+        user: payload,
       };
     }
-    case 'LOGOUT': {
+    case LOGOUT: {
       return {
         ...state,
         isUserLoggedIn: false,
-        user: {}
+        user: {},
       };
     }
 

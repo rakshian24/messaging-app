@@ -7,6 +7,7 @@ import { AuthContext } from '../context/auth';
 import { Navbar, NavDropdown, ListGroup, Image, Nav } from 'react-bootstrap';
 import logo from '../assets/images/logo.jpg';
 import { isEmpty } from 'lodash';
+import {LOGOUT as LOGOUT_TYPE} from "../reducer/actionTypes";
 
 export const Header = () => {
   const {
@@ -22,7 +23,7 @@ export const Header = () => {
     },
     onCompleted(data) {
       if (data) {
-        dispatch({ type: 'LOGOUT' });
+        dispatch({ type: LOGOUT_TYPE });
       }
     },
   });

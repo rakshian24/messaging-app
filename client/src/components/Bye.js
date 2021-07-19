@@ -4,24 +4,35 @@ import { useQuery } from '@apollo/react-hooks';
 
 export const Bye = () => {
   const { data, loading, error } = useQuery(GET_USERS, {
-    fetchPolicy:'network-only'
+    fetchPolicy: 'network-only',
   });
 
   if (loading) {
     return <div>loading...</div>;
   }
 
-  if (error) {
-    console.log(error);
-    return <div>err</div>;
+  if (error && error.graphQLErrors && error.graphQLErrors[0]) {
+    console.log(error.graphQLErrors[0].message);
+    return <div>Error</div>;
   }
 
   if (!data) {
-    return <div>no data</div>;
+    return <div>No users Found</div>;
   }
   if (data) {
     console.log('USERS LIST = ', data);
   }
 
-  return <div>{data.bye}</div>;
+  const { users: { users = [] } = {} } = data;
+
+  return (
+    <>
+      <h1>Users</h1>
+      <div>
+        {users.map((user) => {
+          return <li>{user.username}</li>;
+        })}
+      </div>
+    </>
+  );
 };
