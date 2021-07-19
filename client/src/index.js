@@ -12,6 +12,7 @@ import jwtDecode from 'jwt-decode';
 import { ApolloProvider } from '@apollo/react-hooks';
 import AuthContextProvider from './context/auth';
 import './styles/main.scss';
+import { ToastContextProvider } from './context/toastContext';
 
 const cache = new InMemoryCache({});
 
@@ -96,9 +97,11 @@ const client = new ApolloClient({
 
 ReactDOM.render(
   <AuthContextProvider>
-    <ApolloProvider client={client}>
-      <App />
-    </ApolloProvider>
+    <ToastContextProvider>
+      <ApolloProvider client={client}>
+        <App />
+      </ApolloProvider>
+    </ToastContextProvider>
   </AuthContextProvider>,
   document.getElementById('root'),
 );

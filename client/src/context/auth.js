@@ -1,13 +1,11 @@
 import React, { createContext, useReducer } from 'react';
 import { authReducer } from '../reducer/authReducer';
+import { INITIAL_APP_STATE } from './intialAppState';
 
 export const AuthContext = createContext();
 
 const AuthContextProvider = props => {
-  const [auth, dispatch] = useReducer(authReducer, {
-    isUserLoggedIn: false,
-    user: {},
-  });
+  const [auth, dispatch] = useReducer(authReducer, INITIAL_APP_STATE);
 
   return (
     <AuthContext.Provider value={{ auth, dispatch }}>

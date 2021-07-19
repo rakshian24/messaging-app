@@ -1,8 +1,14 @@
-import React from 'react';
+import React, { useContext } from 'react';
 import { GET_USERS } from './query';
 import { useQuery } from '@apollo/react-hooks';
+import Toast from './Custom/Toast';
+import { ToastContext } from '../context/toastContext';
+import { ERROR } from '../constant';
+import { SHOW_TOASTER } from '../reducer/actionTypes';
+import { v4 as uuid } from 'uuid';
 
 export const Bye = () => {
+  const { state, toastDispatch } = useContext(ToastContext);
   const { data, loading, error } = useQuery(GET_USERS, {
     fetchPolicy: 'network-only',
   });
@@ -13,7 +19,25 @@ export const Bye = () => {
 
   if (error && error.graphQLErrors && error.graphQLErrors[0]) {
     console.log(error.graphQLErrors[0].message);
-    return <div>Error</div>;
+    // toastDispatch({
+    //   type: SHOW_TOASTER,
+    //   payload: {
+    //     id: uuid(),
+    //     type: ERROR,
+    //     title: 'Error',
+    //     message: 'Something Went Wrong!',
+    //   },
+    // });
+    return (
+      <>
+        <Toast
+          position={'toast-top-right'}
+        />
+        {/* <Toast position={'toast-top-left'} />
+    <Toast position={'toast-bottom-left'} />
+    <Toast position={'toast-bottom-right'} /> */}
+      </>
+    );
   }
 
   if (!data) {
